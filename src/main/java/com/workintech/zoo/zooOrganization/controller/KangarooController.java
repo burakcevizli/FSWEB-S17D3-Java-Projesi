@@ -1,5 +1,6 @@
 package com.workintech.zoo.zooOrganization.controller;
 import com.workintech.zoo.zooOrganization.entity.Kangaroo;
+import com.workintech.zoo.zooOrganization.exceptions.KangarooValidation;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +28,14 @@ public class KangarooController {
     }
     @GetMapping("/{id}")
     public Kangaroo getOne(@PathVariable int id){
+        KangarooValidation.isKangarooIdNotValid(id);
+        KangarooValidation.isKangarooNotExist(kangaroosList,id);
         return kangaroosList.get(id);
     }
     @PostMapping("/")
     public Kangaroo save(@RequestBody Kangaroo kangaroo){
+        KangarooValidation.isKangarooExist(kangaroosList, kangaroo.getId());
+        KangarooValidation.isKangarooCredentialsValid(kangaroo);
         kangaroosList.put(kangaroo.getId(), kangaroo);
         return kangaroosList.get(kangaroo.getId());
     }

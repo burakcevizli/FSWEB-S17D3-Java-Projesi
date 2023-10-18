@@ -3,6 +3,7 @@ package com.workintech.zoo.zooOrganization.controller;
 
 import com.workintech.zoo.zooOrganization.entity.Kangaroo;
 import com.workintech.zoo.zooOrganization.entity.Koala;
+import com.workintech.zoo.zooOrganization.exceptions.KoalaValidation;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +31,14 @@ public class KoalaController {
     }
     @GetMapping("/{id}")
     public Koala getOne(@PathVariable int id){
+        KoalaValidation.isKoalaIdNotValid(id);
+        KoalaValidation.isKoalaNotExist(koalaList,id);
         return koalaList.get(id);
     }
     @PostMapping("/")
     public Koala save(@RequestBody Koala koala){
+        KoalaValidation.isKoalaExist(koalaList,koala.getId());
+        KoalaValidation.isKoalaCredentialsValid(koala);
         koalaList.put(koala.getId(), koala);
         return koala;
     }
